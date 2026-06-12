@@ -28,7 +28,7 @@ async function handleSendMessage() {
     try {
         // 3. Request streaming chat response from Gemini 3.5 Flash via Puter
         const responseStream = await puter.ai.chat(messageText, {
-            model: 'gemini-3.5-flash',
+            model: 'gemini-3.1-pro-preview',
             stream: true
         });
 
