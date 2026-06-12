@@ -4,11 +4,21 @@ const speakerTag = document.getElementById("speakerTag");
 const choiceContainer = document.getElementById("choiceContainer");
 const gameViewport = document.getElementById("gameViewport");
 
-// Updates dialogue panels and cleans formatting artifacts
+// Updates dialogue panels and strips metadata formatting artifacts
 function updateDialogueUI(rawText) {
     let cleanText = rawText;
 
-    // 1. Handles speaking role identification tags (e.g., "林曉婷：" or "旁白：")
+    // Optional background changer parsing [CG: url]
+    const cgMatch = cleanText.match(/\[CG：(.*?)\]/);
+    if (cgMatch && cgMatch[1]) {
+        const bgUrl = cgMatch[1].trim();
+        if (bgUrl.startsWith('http')) {
+            gameViewport.style.backgroundImage = `linear-gradient(rgba(255, 184, 108, 0.1), rgba(40, 20, 35, 0.5)), url('${bgUrl}')`;
+        }
+        cleanText = cleanText.replace(/\[CG：.*?\]/, ''); 
+    }
+
+    // Handles speaking role identification tags
     const speakerMatch = cleanText.match(/^([^：:\n]+)[：:]/);
     if (speakerMatch) {
         speakerTag.innerText = speakerMatch[1].trim();
@@ -17,7 +27,7 @@ function updateDialogueUI(rawText) {
         speakerTag.innerText = "旁白描述";
     }
 
-    // 2. Clear out raw inline text list choices from the bottom dialogue window box
+    // Clear out raw inline text options array lists from showing inside bottom text container
     cleanText = cleanText.replace(/^\s*([1-3一二三A-Ca-c\-\*•]|選項)[\.、\s\-\:\)].*$/gm, '');
 
     dialogueText.innerText = cleanText.trim();
@@ -25,25 +35,25 @@ function updateDialogueUI(rawText) {
 
 // Scans text streams to construct exactly 3 beautifully interactive option buttons
 function parsingChoiceOptions(fullText) {
-    choiceContainer.innerHTML = ""; // Clear current dynamic buttons
+    choiceContainer.innerHTML = ""; 
     const optionLines = fullText.split('\n');
     let count = 0;
     
     optionLines.forEach(line => {
         const trimmedLine = line.trim();
-        // Regex catch: checks if line starts with 1., 2., 3. or A, B, C or 一, 二, 三
+        // Verifies numerical string line patterns matching choice options layout formatting
         if (trimmedLine.match(/^([1-3A-Ca-c一二三]{1}[\.、\s\-\:\)]|\[選項[1-3]\])/) && count < 3) {
             count++;
             const btn = document.createElement("div");
             btn.classList.add("game-choice-btn");
             
-            // Clean up the numbers from the button label string
+            // Clean out line index parameters to present neat button action text labels
             const cleanButtonText = trimmedLine.replace(/^([1-3A-Ca-c一二三]{1}[\.、\s\-\:\)]|\[選項[1-3]\])/, "").trim();
             btn.innerText = cleanButtonText;
             
-            // Clicking option routes back into game loop flow directly
+            // Clicking option routes directly into processing logic
             btn.onclick = () => {
-                choiceContainer.innerHTML = ""; // Instantly clear buttons to prevent multi-clicking
+                choiceContainer.innerHTML = ""; 
                 processGameAction(`【玩家選擇了以下行動】：${cleanButtonText}`);
             };
             choiceContainer.appendChild(btn);
@@ -51,7 +61,7 @@ function parsingChoiceOptions(fullText) {
     });
 }
 
-// Core AI Story Generation Process Loop
+// Core Story Process Loop
 async function processGameAction(actionPayloadText) {
     speakerTag.innerText = "因果演算中...";
     dialogueText.innerText = "正在推演時空分歧線，抉擇即刻呈現...";
@@ -60,23 +70,23 @@ async function processGameAction(actionPayloadText) {
     let runningResponse = "";
 
     try {
-        // Calling Puter.js Global AI Chat
+        // Query global puter.js package stream instance
         const responseStream = await puter.ai.chat(actionPayloadText, {
             model: 'gemini-3.1-pro-preview',
             stream: true,
             instructions: `你是一款現代高中校園戀愛養成 Galgame 的文本核心系統。
-請嚴格遵守以下指示，與玩家進行互動：
+請嚴格依照設定與玩家進行互動：
 
 【核心規則】
-1. 每一回合請提供極具動漫分鏡感、筆觸細膩且富有情感波折的「場景與心理描述」。
-2. 你必須自己生成三個不同的「行為動作」或「說話選項」供玩家選擇。
-3. 為了讓系統能順利將選項轉化為畫面上的點擊按鈕，你必須在文本的【最後三行】，嚴格使用以下數字格式輸出選項，絕對不要加上額外的括號或解釋：
+1. 每一回合請提供極具動漫分鏡感、筆觸細膩且富有情感波折的簡短「場景與心理描述」。
+2. 你必須自行生成三個截然不同的行為動作或說話語句選項供玩家選擇。
+3. 為利解析引擎處理，你必須在輸出文本的【最後三行】，嚴格使用以下數字序號開頭格式輸出選項內容，不可夾帶任何其他符號或說明：
 1. 第一個行為或對話選項
 2. 第二個行為或對話選項
 3. 第三個行為或對話選項`
         });
 
-        // Dynamic streaming engine
+        // Loop array async text parts
         for await (const part of responseStream) {
             if (part?.text) {
                 runningResponse += part.text;
@@ -84,31 +94,29 @@ async function processGameAction(actionPayloadText) {
             }
         }
         
-        // Scan response text output to append the 3 visual decision buttons
+        // Finalize layout loop array options instantiation
         parsingChoiceOptions(runningResponse);
 
     } catch (error) {
-        console.error("Game System Error:", error);
+        console.error("Game System Error Trace:", error);
         speakerTag.innerText = "系統錯誤";
-        dialogueText.innerText = "時空網路連線中斷，無法載入故事發展。請檢查網路或重整網頁。";
+        dialogueText.innerText = "命運線連線中斷，無法讀取故事。請重新載入。";
     }
 }
 
-// ✨ INITIAL START BUTTON OVERLAY LOGIC
+// Auto-trigger landing screen state arrangement configurations upon component loading finishes
 window.onload = () => {
-    // Set landing configuration
     speakerTag.innerText = "遊戲主選單";
-    dialogueText.innerText = "歡迎來到校園戀愛養成遊戲。請點擊上方按鈕拉開青春序幕。";
+    dialogueText.innerText = "歡迎來到校園戀愛養成遊戲。粉色戀愛序幕已備就，請點擊上方按鈕開始啟程。";
     choiceContainer.innerHTML = "";
 
-    // Create the Start Game button node
+    // Generate the Landing Title button structure
     const startBtn = document.createElement("div");
     startBtn.classList.add("game-choice-btn");
     startBtn.innerText = "🌸 開始遊戲 (Start Game) 🌸";
     
     startBtn.onclick = () => {
-        choiceContainer.innerHTML = ""; // Remove start button
-        // Wake up AI to build scene
+        choiceContainer.innerHTML = ""; 
         processGameAction("【系統啟動】請拉開序幕，以極具畫面感的文筆描述開學第一天早晨的櫻花校園走廊，並引導出跟傲嬌青梅竹馬相遇的初始 3 個行動選項。");
     };
     
