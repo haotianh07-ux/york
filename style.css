@@ -10,7 +10,7 @@
 }
 
 body {
-    background-color: #0f111a; /* Sleek Dark background */
+    background-color: #0f111a; 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -24,7 +24,7 @@ body {
     width: 100%;
     max-width: 1024px;
     height: 100vh;
-    max-height: 576px; /* Standard 16:9 Desktop Viewport Ratio Box */
+    max-height: 576px; 
     display: flex;
     flex-direction: column;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
@@ -43,9 +43,9 @@ body {
     background-position: center;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end; /* Snaps dialogue box down to the bottom */
+    justify-content: flex-end; 
     padding: 20px;
-    overflow: hidden;
+    position: relative;
 }
 
 /* Choice Buttons Center Floating Overlay */
@@ -64,9 +64,9 @@ body {
 
 /* Styled Interactive Choice/Decision Option Buttons */
 .game-choice-btn {
-    background: rgba(15, 23, 42, 0.85);
+    background: rgba(15, 23, 42, 0.9);
     color: #e2e8f0;
-    border: 1px solid #38bdf8; /* Soft Anime Cyan Border Line */
+    border: 1px solid #38bdf8; 
     padding: 14px 20px;
     border-radius: 6px;
     font-size: 15px;
@@ -97,7 +97,7 @@ body {
     position: absolute;
     top: -24px;
     left: 15px;
-    background: linear-gradient(135deg, #ec4899, #8b5cf6); /* Vibrant Pink-Purple Hue */
+    background: linear-gradient(135deg, #ec4899, #8b5cf6); 
     color: white;
     padding: 4px 22px;
     font-size: 14px;
@@ -109,14 +109,15 @@ body {
 
 /* Wide Translucent Glassmorphism Dialogue Screen */
 .dialogue-window {
-    background: rgba(15, 17, 26, 0.75); /* Deep semi-transparent overlay */
-    backdrop-filter: blur(8px); /* Frosted glass effect */
+    background: rgba(15, 17, 26, 0.8); 
+    backdrop-filter: blur(8px); 
     -webkit-backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
-    padding: 22px 25px 35px 25px; /* Extra bottom cushion for control bar alignment */
-    height: 120px;
+    padding: 22px 25px 35px 25px; 
+    height: 140px;
     box-shadow: 0 -5px 25px rgba(0,0,0,0.5);
+    overflow-y: auto;
 }
 
 #dialogueText {
@@ -124,7 +125,7 @@ body {
     line-height: 1.6;
     color: #f1f5f9;
     letter-spacing: 0.5px;
-    white-space: pre-line; /* Renders regular line endings appropriately */
+    white-space: pre-line; 
 }
 
 /* Mini Utility System Command Overlay Row */
