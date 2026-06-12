@@ -1,25 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gemini Interactive Chat (Puter.js)</title>
+    <title>York Visual Novel Engine</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://js.puter.com/v2/"></script>
 </head>
 <body>
 
-    <div class="chat-container">
-        <div class="chat-header">
-            <h2>Gemini AI Assistant (via Puter)</h2>
+    <div class="game-container">
+        
+        <div class="game-viewport" id="gameViewport">
+            
+            <div class="choice-container" id="choiceContainer">
+                </div>
+            
+            <div class="dialogue-box-wrap" id="dialogueWrap">
+                <div class="speaker-tag" id="speakerTag">系統廣播</div>
+                
+                <div class="dialogue-window">
+                    <p id="dialogueText">正在載入校園場景中... 請點擊下方輸入框或傳送按鈕開始遊戲。</p>
+                </div>
+                
+                <div class="game-controls">
+                    <span class="control-btn">LOG</span>
+                    <span class="control-btn">AUTO</span>
+                    <span class="control-btn">SKIP</span>
+                    <span class="control-btn">SAVE</span>
+                    <span class="control-btn">LOAD</span>
+                </div>
+            </div>
+
         </div>
-        <div class="chat-box" id="chatBox">
-            <div class="message ai-message">Hello! How can I help you today?</div>
+
+        <div class="interaction-bar">
+            <input type="text" id="userInput" placeholder="輸入你的行動、決定或想說的話..." autocomplete="off">
+            <button id="sendBtn">確認執行</button>
         </div>
-        <div class="input-container">
-            <input type="text" id="userInput" placeholder="Type a message..." autocomplete="off">
-            <button id="sendBtn">Send</button>
-        </div>
+
     </div>
 
     <script src="app.js"></script>
