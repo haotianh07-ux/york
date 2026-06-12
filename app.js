@@ -1,30 +1,16 @@
-import { GoogleGenAI } from "@google/genai";
-
-// ⚠️ REPLACE WITH YOUR ACTUAL GEMINI API KEY
-const API_KEY = "YOUR_GEMINI_API_KEY_HERE"; 
-
-// Initialize the Google Gen AI Client
-const ai = new GoogleGenAI({ apiKey: API_KEY });
-
-// Create a stateful chat session using gemini-3.5-flash
-const chatSession = ai.chats.create({
-    model: "gemini-3.5-flash"
-});
-
 // DOM Elements
 const chatBox = document.getElementById("chatBox");
 const userInput = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
-// Function to append message bubbles to the UI
-void function appendMessage(text, sender) {
+// Helper function to append message bubbles to the UI
+function appendMessage(text, sender) {
     const messageDiv = document.createElement("div");
     messageDiv.classList.add("message", `${sender}-message`);
     messageDiv.innerText = text;
     chatBox.appendChild(messageDiv);
-    
-    // Auto-scroll to the bottom of the chat
     chatBox.scrollTop = chatBox.scrollHeight;
+    return messageDiv;
 }
 
 // Function to handle sending messages
@@ -34,30 +20,34 @@ async function handleSendMessage() {
 
     // 1. Show User Message in UI
     appendMessage(messageText, "user");
-    userInput.value = ""; // Clear input
+    userInput.value = ""; // Clear input field
 
-    // 2. Add a temporary loading bubble for the AI
-    const loadingDiv = document.createElement("div");
-    loadingDiv.classList.add("message", "ai-message");
-    loadingDiv.innerText = "Typing...";
-    chatBox.appendChild(loadingDiv);
-    chatBox.scrollTop = chatBox.scrollHeight;
+    // 2. Add an empty AI bubble for streaming the response
+    const aiMessageDiv = appendMessage("", "ai");
 
     try {
-        // 3. Send message to Gemini via the stateful chat session
-        const response = await chatSession.sendMessage({
-            message: messageText
+        // 3. Request streaming chat response from Gemini 3.5 Flash via Puter
+        const responseStream = await puter.ai.chat(messageText, {
+            model: 'gemini-3.5-flash',
+            stream: true
         });
 
-        // 4. Replace "Typing..." text with the actual AI response
-        loadingDiv.innerText = response.text;
+        // 4. Read the chunks from the stream and append them live
+        for await (const part of responseStream) {
+            if (part?.text) {
+                // Keep building the response string inside the bubble
+                aiMessageDiv.innerText += part.text;
+                // Keep auto-scrolling as the message grows
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }
     } catch (error) {
-        console.error("Gemini API Error:", error);
-        loadingDiv.innerText = "Sorry, something went wrong. Please check your console/API key.";
+        console.error("Puter/Gemini Error:", error);
+        aiMessageDiv.innerText = "Sorry, I encountered an error processing that request.";
     }
 }
 
-// Event Listeners
+// Event Listeners for interaction
 sendBtn.addEventListener("click", handleSendMessage);
 
 userInput.addEventListener("keypress", (e) => {
