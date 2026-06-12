@@ -3,21 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gemini Interactive Chat</title>
+    <title>Gemini Interactive Chat (Puter.js)</title>
     <link rel="stylesheet" href="style.css">
-    <script type="importmap">
-        {
-            "imports": {
-                "@google/genai": "https://esm.run/@google/genai"
-            }
-        }
-    </script>
+    <script src="https://js.puter.com/v2/"></script>
 </head>
 <body>
 
     <div class="chat-container">
         <div class="chat-header">
-            <h2>Gemini AI Assistant</h2>
+            <h2>Gemini AI Assistant (via Puter)</h2>
         </div>
         <div class="chat-box" id="chatBox">
             <div class="message ai-message">Hello! How can I help you today?</div>
@@ -28,6 +22,6 @@
         </div>
     </div>
 
-    <script type="module" src="app.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
